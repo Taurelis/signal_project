@@ -1,0 +1,67 @@
+@startuml AlertGenerationSystem
+skinparam classAttributeIconSize 0
+
+class AlertGenerator {
+  - dataStorage: DataStorage
+  + AlertGenerator(dataStorage: DataStorage)
+  + evaluateData(patient: Patient): void
+  - checkHeartRate(records: List<PatientRecord>): void
+  - checkBloodPressure(records: List<PatientRecord>): void
+  - checkBloodSaturation(records: List<PatientRecord>): void
+  - triggerAlert(alert: Alert): void
+}
+
+class Alert {
+  - patientId: int
+  - condition: String
+  - timestamp: long
+  - severity: String
+  + Alert(patientId: int, condition: String, timestamp: long, severity: String)
+  + getPatientId(): int
+  + getCondition(): String
+  + getTimestamp(): long
+  + getSeverity(): String
+}
+
+class AlertManager {
+  - activeAlerts: List<Alert>
+  + dispatch(alert: Alert): void
+  + resolveAlert(patientId: int): void
+  + getActiveAlerts(): List<Alert>
+  - notifyStaff(alert: Alert): void
+}
+
+class AlertCondition {
+  - metricType: String
+  - threshold: double
+  - operator: String
+  + AlertCondition(metricType: String, threshold: double, operator: String)
+  + isMet(value: double): boolean
+  + getMetricType(): String
+  + getThreshold(): double
+}
+
+class Patient {
+  - patientId: int
+  - alertConditions: List<AlertCondition>
+  + getPatientId(): int
+  + getAlertConditions(): List<AlertCondition>
+  + addCondition(condition: AlertCondition): void
+}
+
+class MedicalStaff {
+  - staffId: int
+  - name: String
+  - department: String
+  + receiveAlert(alert: Alert): void
+}
+
+AlertGenerator ..> Alert : creates
+AlertGenerator --> AlertManager : forwards alerts to
+AlertGenerator --> Patient : reads conditions from
+AlertManager --> MedicalStaff : notifies
+Alert ..> Patient : references
+Patient "1" *-- "0..*" AlertCondition : owns
+AlertManager "1" o-- "0..*" Alert : manages
+
+@enduml

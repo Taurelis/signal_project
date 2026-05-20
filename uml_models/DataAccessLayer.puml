@@ -1,0 +1,70 @@
+@startuml DataAccessLayer
+skinparam classAttributeIconSize 0
+
+interface DataListener {
+  + startListening(): void
+  + stopListening(): void
+  + onDataReceived(rawData: String): void
+}
+
+class TCPDataListener {
+  - port: int
+  - serverSocket: ServerSocket
+  + TCPDataListener(port: int)
+  + startListening(): void
+  + stopListening(): void
+  + onDataReceived(rawData: String): void
+}
+
+class WebSocketDataListener {
+  - port: int
+  + WebSocketDataListener(port: int)
+  + startListening(): void
+  + stopListening(): void
+  + onDataReceived(rawData: String): void
+}
+
+class FileDataListener {
+  - filePath: String
+  + FileDataListener(filePath: String)
+  + startListening(): void
+  + stopListening(): void
+  + onDataReceived(rawData: String): void
+}
+
+class DataParser {
+  + parse(rawData: String): ParsedRecord
+  - parseCSV(data: String): ParsedRecord
+  - parseJSON(data: String): ParsedRecord
+}
+
+class ParsedRecord {
+  - patientId: int
+  - value: double
+  - type: String
+  - timestamp: long
+  + getPatientId(): int
+  + getValue(): double
+  + getType(): String
+  + getTimestamp(): long
+}
+
+class DataSourceAdapter {
+  - storage: DataStorage
+  - parser: DataParser
+  + DataSourceAdapter(storage: DataStorage, parser: DataParser)
+  + onDataReceived(rawData: String): void
+  - forwardToStorage(record: ParsedRecord): void
+}
+
+DataListener <|.. TCPDataListener : implements
+DataListener <|.. WebSocketDataListener : implements
+DataListener <|.. FileDataListener : implements
+TCPDataListener --> DataSourceAdapter : passes raw data to
+WebSocketDataListener --> DataSourceAdapter : passes raw data to
+FileDataListener --> DataSourceAdapter : passes raw data to
+DataSourceAdapter --> DataParser : uses
+DataParser ..> ParsedRecord : creates
+DataSourceAdapter --> DataStorage : forwards parsed data to
+
+@enduml

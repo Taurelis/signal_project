@@ -1,0 +1,66 @@
+@startuml DataStorageSystem
+skinparam classAttributeIconSize 0
+
+interface DataStorage {
+  + addPatientData(patientId: int, value: double, type: String, timestamp: long): void
+  + getRecords(patientId: int, startTime: long, endTime: long): List<PatientRecord>
+  + getAllPatients(): List<Patient>
+  + deleteOldRecords(before: long): void
+}
+
+class InMemoryDataStorage {
+  - patientMap: Map<Integer, Patient>
+  + addPatientData(patientId: int, value: double, type: String, timestamp: long): void
+  + getRecords(patientId: int, startTime: long, endTime: long): List<PatientRecord>
+  + getAllPatients(): List<Patient>
+  + deleteOldRecords(before: long): void
+}
+
+class Patient {
+  - patientId: int
+  - records: List<PatientRecord>
+  + addRecord(value: double, type: String, timestamp: long): void
+  + getRecords(startTime: long, endTime: long): List<PatientRecord>
+  + getPatientId(): int
+}
+
+class PatientRecord {
+  - patientId: int
+  - measurementValue: double
+  - recordType: String
+  - timestamp: long
+  + getMeasurementValue(): double
+  + getRecordType(): String
+  + getTimestamp(): long
+  + getPatientId(): int
+}
+
+class DataRetriever {
+  - storage: DataStorage
+  + DataRetriever(storage: DataStorage)
+  + getRecordsByType(patientId: int, type: String): List<PatientRecord>
+  + getLatestRecord(patientId: int, type: String): PatientRecord
+  + getRecordsInRange(patientId: int, start: long, end: long): List<PatientRecord>
+}
+
+class AccessControl {
+  - authorizedRoles: List<String>
+  + canRead(role: String, patientId: int): boolean
+  + canWrite(role: String): boolean
+}
+
+class DataDeletionPolicy {
+  - retentionPeriodDays: int
+  + DataDeletionPolicy(retentionPeriodDays: int)
+  + shouldDelete(record: PatientRecord): boolean
+  + applyPolicy(storage: DataStorage): void
+}
+
+DataStorage <|.. InMemoryDataStorage : implements
+InMemoryDataStorage "1" *-- "0..*" Patient : stores
+Patient "1" *-- "0..*" PatientRecord : has
+DataRetriever --> DataStorage : queries
+DataRetriever --> AccessControl : checks permissions with
+DataDeletionPolicy --> DataStorage : cleans up
+
+@enduml

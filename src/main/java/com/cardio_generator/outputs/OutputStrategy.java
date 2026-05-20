@@ -3,8 +3,7 @@ package com.cardio_generator.outputs;
 /**
  * Interface that defines how generated patient data should be output.
  * Different implementations can send the data to the console, a file,
- * or over a network connection. All implementations need to be thread-safe
- * since multiple patient tasks run at the same time.
+ * or over a network connection.
  */
 public interface OutputStrategy {
 

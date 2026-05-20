@@ -1,0 +1,55 @@
+@startuml PatientIdentificationSystem
+skinparam classAttributeIconSize 0
+
+class PatientIdentifier {
+  - identityManager: IdentityManager
+  + PatientIdentifier(identityManager: IdentityManager)
+  + matchPatient(patientId: int): HospitalPatient
+  + validateId(patientId: int): boolean
+  + linkDataToPatient(record: PatientRecord, patientId: int): void
+}
+
+class HospitalPatient {
+  - patientId: int
+  - name: String
+  - dateOfBirth: String
+  - medicalHistory: List<String>
+  - assignedDoctor: String
+  + getPatientId(): int
+  + getName(): String
+  + getDateOfBirth(): String
+  + getMedicalHistory(): List<String>
+  + getAssignedDoctor(): String
+}
+
+class IdentityManager {
+  - patientRegistry: Map<Integer, HospitalPatient>
+  + registerPatient(patient: HospitalPatient): void
+  + getPatient(patientId: int): HospitalPatient
+  + removePatient(patientId: int): void
+  + isRegistered(patientId: int): boolean
+}
+
+class PatientRecord {
+  - patientId: int
+  - measurementValue: double
+  - recordType: String
+  - timestamp: long
+  + getPatientId(): int
+  + getRecordType(): String
+  + getMeasurementValue(): double
+}
+
+class IdentityMismatchHandler {
+  + handleMismatch(patientId: int): void
+  + logError(message: String): void
+  + flagForReview(patientId: int): void
+}
+
+PatientIdentifier --> IdentityManager : uses
+PatientIdentifier --> IdentityMismatchHandler : calls on mismatch
+PatientIdentifier ..> HospitalPatient : returns
+PatientIdentifier --> PatientRecord : validates
+IdentityManager "1" *-- "0..*" HospitalPatient : manages registry
+
+@enduml
