@@ -31,12 +31,11 @@ public class BloodSaturationDataGenerator implements PatientDataGenerator {
     }
 
     /**
-     * Generates a new blood saturation reading for the given patient and sends it to the output.
-     * The new value is based on the previous one, slightly adjusted by a random amount.
-     * The output label is "Saturation" and the value is formatted as a percentage string (e.g. "97%").
+     * Generates a new saturation reading for the patient and sends it to the output.
+     * The new value is the previous one with a small random change applied.
      *
-     * @param patientId      the ID of the patient to generate data for
-     * @param outputStrategy the output strategy that receives the generated data
+     * @param patientId      the ID of the patient
+     * @param outputStrategy where to send the generated reading
      */
     @Override
     public void generate(int patientId, OutputStrategy outputStrategy) {

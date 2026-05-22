@@ -5,12 +5,10 @@ import java.util.Random;
 import com.cardio_generator.outputs.OutputStrategy;
 
 /**
- * Generates simulated alert events for patients.
- * Each patient can either have an active alert or not. If an alert is already active,
- * there is a 90% chance it gets resolved on each call. If no alert is active, a new one
- * may be triggered based on a probability calculated from a Poisson distribution
- * with a rate of 0.1 per period.
- * Outputs "triggered" when a new alert starts and "resolved" when it ends.
+ * Simulates alert button presses for patients.
+ * If a patient already has an active alert, there's a 90% chance it clears each cycle.
+ * If there's no active alert, there's a small chance a new one gets triggered.
+ * It outputs "triggered" or "resolved" depending on what happened.
  */
 public class AlertGenerator implements PatientDataGenerator {
 
@@ -29,12 +27,11 @@ public class AlertGenerator implements PatientDataGenerator {
     }
 
     /**
-     * Generates an alert event for the given patient.
-     * If the patient currently has an active alert, there is a 90% chance it resolves this cycle.
-     * Otherwise, a new alert may be triggered based on the computed probability.
+     * Runs one cycle of alert simulation for a patient.
+     * Either clears the current alert or maybe starts a new one.
      *
-     * @param patientId      the ID of the patient to check and generate an alert for
-     * @param outputStrategy the output strategy used to record the alert event
+     * @param patientId      the ID of the patient
+     * @param outputStrategy where to send the output
      */
     @Override
     public void generate(int patientId, OutputStrategy outputStrategy) {

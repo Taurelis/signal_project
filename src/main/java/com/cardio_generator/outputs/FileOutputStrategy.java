@@ -36,15 +36,13 @@ public class FileOutputStrategy implements OutputStrategy {
     }
 
     /**
-     * Writes a patient data record to the file corresponding to the given label.
-     * The record is written in the format:
-     * Patient ID: X, Timestamp: Y, Label: Z, Data: W
-     * If the directory or file cannot be created, an error is printed and the method returns early.
+     * Writes one line of patient data to the file for the given label.
+     * Creates the directory if it doesn't exist yet.
      *
      * @param patientId the ID of the patient
-     * @param timestamp the time the measurement was taken in milliseconds since epoch
-     * @param label     the type of measurement, used as the file name (without extension)
-     * @param data      the measurement value to write
+     * @param timestamp when the measurement was taken
+     * @param label     the measurement type, also used as the filename
+     * @param data      the value to write
      */
     @Override
     public void output(int patientId, long timestamp, String label, String data) {

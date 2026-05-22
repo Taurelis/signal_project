@@ -3,10 +3,9 @@ package com.cardio_generator.generators;
 import com.cardio_generator.outputs.OutputStrategy;
 
 /**
- * Interface for classes that generate simulated health data for a patient.
- * Each data type (ECG, blood pressure, etc.) has its own implementation.
- * The HealthDataSimulator uses this interface to schedule data generation
- * for all patients without needing to know the specific type of data.
+ * Interface for things that generate simulated health data for patients.
+ * Each data type like ECG or blood pressure has its own class that implements this.
+ * The HealthDataSimulator calls generate() on all of them in a loop.
  */
 public interface PatientDataGenerator {
 
