@@ -15,12 +15,36 @@ import com.alerts.AlertGenerator;
 public class DataStorage {
     private Map<Integer, Patient> patientMap; // Stores patient objects indexed by their unique patient ID.
 
+    // singleton stuff - only one DataStorage should exist at a time
+    private static DataStorage instance;
+
     /**
-     * Constructs a new instance of DataStorage, initializing the underlying storage
-     * structure.
+     * Private constructor so nothing outside can call new DataStorage().
+     * Use getInstance() instead.
      */
-    public DataStorage() {
+    private DataStorage() {
         this.patientMap = new HashMap<>();
+    }
+
+    /**
+     * Returns the single shared instance of DataStorage.
+     * Creates it the first time this is called.
+     *
+     * @return the singleton instance
+     */
+    public static DataStorage getInstance() {
+        if (instance == null) {
+            instance = new DataStorage();
+        }
+        return instance;
+    }
+
+    /**
+     * Resets the singleton so tests can start fresh each time.
+     * Only meant to be used in tests.
+     */
+    public static void resetForTesting() {
+        instance = null;
     }
 
     /**
@@ -85,7 +109,7 @@ public class DataStorage {
     public static void main(String[] args) {
         // DataReader is not defined in this scope, should be initialized appropriately.
         // DataReader reader = new SomeDataReaderImplementation("path/to/data");
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
 
         // Assuming the reader has been properly initialized and can read data into the
         // storage

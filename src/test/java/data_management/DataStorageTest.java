@@ -1,6 +1,7 @@
 package data_management;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.data_management.DataStorage;
@@ -10,9 +11,14 @@ import java.util.List;
 
 class DataStorageTest {
 
+    @BeforeEach
+    void setup() {
+        DataStorage.resetForTesting();
+    }
+
     @Test
     void testAddAndGetRecords() {
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
         storage.addPatientData(1, 100.0, "WhiteBloodCells", 1714376789050L);
         storage.addPatientData(1, 200.0, "WhiteBloodCells", 1714376789051L);
 
@@ -23,14 +29,14 @@ class DataStorageTest {
 
     @Test
     void testGetRecordsForUnknownPatientReturnsEmpty() {
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
         List<PatientRecord> records = storage.getRecords(999, 0, Long.MAX_VALUE);
         assertTrue(records.isEmpty());
     }
 
     @Test
     void testGetAllPatients() {
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
         storage.addPatientData(1, 100.0, "HeartRate", 1000L);
         storage.addPatientData(2, 200.0, "HeartRate", 1000L);
 
@@ -39,7 +45,7 @@ class DataStorageTest {
 
     @Test
     void testRecordsFilteredByTimeRange() {
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
         storage.addPatientData(1, 100.0, "HeartRate", 1000L);
         storage.addPatientData(1, 200.0, "HeartRate", 2000L);
         storage.addPatientData(1, 300.0, "HeartRate", 3000L);
@@ -51,7 +57,7 @@ class DataStorageTest {
 
     @Test
     void testMultipleRecordTypesForSamePatient() {
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
         storage.addPatientData(1, 120.0, "SystolicPressure", 1000L);
         storage.addPatientData(1, 95.0, "Saturation", 1001L);
 

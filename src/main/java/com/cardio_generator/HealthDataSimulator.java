@@ -43,6 +43,25 @@ public class HealthDataSimulator {
     private static OutputStrategy outputStrategy = new ConsoleOutputStrategy(); // Default output strategy
     private static final Random random = new Random();
 
+    // singleton - only one simulator should run at a time
+    private static HealthDataSimulator instance;
+
+    private HealthDataSimulator() {
+        // private so nothing outside creates instances directly
+    }
+
+    /**
+     * Returns the single shared instance of this simulator.
+     *
+     * @return the singleton instance
+     */
+    public static HealthDataSimulator getInstance() {
+        if (instance == null) {
+            instance = new HealthDataSimulator();
+        }
+        return instance;
+    }
+
     /**
      * Starts the simulator. Parses command line arguments, creates the scheduler,
      * and begins generating data for all patients.
